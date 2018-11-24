@@ -1,3 +1,4 @@
 cd /app/src
+mvn versions:set -DnewVersion=${APP_VERSION}
 mvn package
 
