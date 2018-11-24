@@ -1,5 +1,7 @@
 echo $pwd
 ls -all
+cd /tmp/src
+ls -all
 #mvn versions:set -DnewVersion=${APP_VERSION}
 #mvn package
 #mv /app/src/target/kubis-rest-*.jar /app/kubis-rest.jar
