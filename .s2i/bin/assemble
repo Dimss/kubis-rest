@@ -1,6 +1,0 @@
-cd /tmp/src
-mvn versions:set -DnewVersion=${APP_VERSION}
-mvn package
-mkdir /app
-mv /tmp/src/target/kubis-rest-*.jar /app/kubis-rest.jar
-
