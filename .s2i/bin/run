@@ -1,1 +1,1 @@
-echo "Hello world"
+java -jar /app/kubis-rest.jar
