@@ -1,5 +1,3 @@
-echo $pwd
-ls -all
 cd /tmp/src
 mvn versions:set -DnewVersion=${APP_VERSION}
 mvn package
