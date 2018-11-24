@@ -1,6 +1,7 @@
-cd /app/src
-mvn versions:set -DnewVersion=${APP_VERSION}
-mvn package
-mv /app/src/target/kubis-rest-*.jar /app/kubis-rest.jar
-rm -fr /app/src
+echo $pwd
+ls -all
+#mvn versions:set -DnewVersion=${APP_VERSION}
+#mvn package
+#mv /app/src/target/kubis-rest-*.jar /app/kubis-rest.jar
+#rm -fr /app/src
 
