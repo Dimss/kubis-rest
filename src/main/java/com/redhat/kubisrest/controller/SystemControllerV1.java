@@ -41,6 +41,19 @@ public class SystemControllerV1 {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
 
+    @GetMapping("/block")
+    public ResponseEntity blockRequest() {
+        try {
+            Thread.sleep(10*1000);
+            return ResponseEntity
+                    .ok()
+                    .header("content-type", "application/json")
+                    .body((new ResponsePayload().getJsonPayload()));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

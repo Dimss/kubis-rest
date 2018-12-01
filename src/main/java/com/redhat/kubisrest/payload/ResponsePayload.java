@@ -7,6 +7,10 @@ public class ResponsePayload {
     private String status;
     private Object data;
 
+    public ResponsePayload() {
+        this.status = "ok";
+        this.data = null;
+    }
     public ResponsePayload(Object data) {
         this.status = "ok";
         this.data = data;
