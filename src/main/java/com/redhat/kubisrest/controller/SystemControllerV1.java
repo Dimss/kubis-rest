@@ -56,4 +56,10 @@ public class SystemControllerV1 {
             throw new RuntimeException(e);
         }
     }
+
+
+    @GetMapping("/error")
+    public ResponseEntity error() {
+        throw new RuntimeException("This is error generator method");
+    }
 }
