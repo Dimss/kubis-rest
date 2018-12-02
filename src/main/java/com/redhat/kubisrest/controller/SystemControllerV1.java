@@ -38,7 +38,7 @@ public class SystemControllerV1 {
         try {
             ip = Inet4Address.getLocalHost();
             String hostname = ip.getHostName();
-            // For Circuit breaker test, return HTTP 500 if the request
+            // For Circuit breaker test, return HTTP 502 if the request
             // arriving to the first instance in the stateful set (should be end with 0)
             if (hostname.equals(xAppUser))
                 return new ResponseEntity<>(null, HttpStatus.BAD_GATEWAY);
