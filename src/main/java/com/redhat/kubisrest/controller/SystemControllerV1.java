@@ -36,7 +36,7 @@ public class SystemControllerV1 {
     public ResponseEntity hostMetadata() {
         InetAddress ip;
         try {
-            String cbTest = environment.getProperty("CB-MODE");
+            String cbTest = environment.getProperty("CB_MODE");
             ip = Inet4Address.getLocalHost();
             String hostname = ip.getHostName();
             // For Circuit breaker test, return HTTP 500 if the request
