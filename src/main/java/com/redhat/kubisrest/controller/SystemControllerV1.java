@@ -6,11 +6,9 @@ import com.redhat.kubisrest.payload.ResponsePayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -34,6 +32,7 @@ public class SystemControllerV1 {
     }
 
     @GetMapping("/metadata")
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity hostMetadata( @RequestHeader(value="X-APP-USER",defaultValue = "") String xAppUser) {
         InetAddress ip;
         try {
@@ -42,7 +41,8 @@ public class SystemControllerV1 {
             // For Circuit breaker test, return HTTP 500 if the request
             // arriving to the first instance in the stateful set (should be end with 0)
             if (hostname.equals(xAppUser))
-                    throw new RuntimeException("This is error generator method");
+                return new ResponseEntity<>(null, HttpStatus.BAD_GATEWAY);
+//                    throw new RuntimeException("This is error generator method");
             return ResponseEntity
                     .ok()
                     .header("content-type", "application/json")
