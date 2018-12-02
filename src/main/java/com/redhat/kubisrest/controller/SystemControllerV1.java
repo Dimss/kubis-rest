@@ -5,6 +5,7 @@ import com.redhat.kubisrest.payload.HostMetadataResponse;
 import com.redhat.kubisrest.payload.ResponsePayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,9 @@ public class SystemControllerV1 {
     @Autowired
     BuildProperties buildProperties;
 
+    @Autowired
+    private Environment environment;
+
     @GetMapping("/version")
     public ResponseEntity status() {
         return ResponseEntity
@@ -32,11 +36,17 @@ public class SystemControllerV1 {
     public ResponseEntity hostMetadata() {
         InetAddress ip;
         try {
+            String cbTest = environment.getProperty("CB-MODE");
             ip = Inet4Address.getLocalHost();
+            String hostname = ip.getHostName();
+            // For Circuit breaker test, return HTTP 500 if the request
+            // arriving to the first instance in the stateful set (should be end with 0)
+            if (cbTest != null && hostname.substring(hostname.length() -1).equals("0"))
+                    throw new RuntimeException("This is error generator method");
             return ResponseEntity
                     .ok()
                     .header("content-type", "application/json")
-                    .body((new ResponsePayload(new HostMetadataResponse(ip.getHostName())).getJsonPayload()));
+                    .body((new ResponsePayload(new HostMetadataResponse(hostname)).getJsonPayload()));
         } catch (UnknownHostException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
