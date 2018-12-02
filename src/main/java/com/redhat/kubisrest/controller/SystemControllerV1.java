@@ -8,6 +8,7 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,15 +34,14 @@ public class SystemControllerV1 {
     }
 
     @GetMapping("/metadata")
-    public ResponseEntity hostMetadata() {
+    public ResponseEntity hostMetadata( @RequestHeader(value="X-APP-USER",defaultValue = "") String xAppUser) {
         InetAddress ip;
         try {
-            String cbTest = environment.getProperty("CB_MODE");
             ip = Inet4Address.getLocalHost();
             String hostname = ip.getHostName();
             // For Circuit breaker test, return HTTP 500 if the request
             // arriving to the first instance in the stateful set (should be end with 0)
-            if (cbTest != null && hostname.substring(hostname.length() -1).equals("0"))
+            if (hostname.equals(xAppUser))
                     throw new RuntimeException("This is error generator method");
             return ResponseEntity
                     .ok()
