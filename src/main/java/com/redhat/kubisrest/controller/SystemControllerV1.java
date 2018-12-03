@@ -71,11 +71,14 @@ public class SystemControllerV1 {
     }
 
     @RequestMapping(value = "/message", method = RequestMethod.POST)
-    public void message(@RequestBody Message message) throws Exception {
+    public ResponseEntity message(@RequestBody Message message) throws Exception {
         Logger logger = LoggerFactory.getLogger(SystemControllerV1.class);
         logger.info("Received new message");
         logger.info(message.toString());
-
+        return ResponseEntity
+                .ok()
+                .header("content-type", "application/json")
+                .body((new ResponsePayload().getJsonPayload()));
     }
 
     @GetMapping("/error")
