@@ -2,7 +2,10 @@ package com.redhat.kubisrest.controller;
 
 import com.redhat.kubisrest.payload.AppStatusResponse;
 import com.redhat.kubisrest.payload.HostMetadataResponse;
+import com.redhat.kubisrest.payload.Message;
 import com.redhat.kubisrest.payload.ResponsePayload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.core.env.Environment;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/system")
@@ -42,7 +46,6 @@ public class SystemControllerV1 {
             // arriving to the first instance in the stateful set (should be end with 0)
             if (hostname.equals(xAppUser))
                 return new ResponseEntity<>(null, HttpStatus.BAD_GATEWAY);
-//                    throw new RuntimeException("This is error generator method");
             return ResponseEntity
                     .ok()
                     .header("content-type", "application/json")
@@ -67,6 +70,13 @@ public class SystemControllerV1 {
         }
     }
 
+    @RequestMapping(value = "/message", method = RequestMethod.POST)
+    public void message(@RequestBody Message message) throws Exception {
+        Logger logger = LoggerFactory.getLogger(SystemControllerV1.class);
+        logger.info("Received new message");
+        logger.info(message.toString());
+
+    }
 
     @GetMapping("/error")
     public ResponseEntity error() {
