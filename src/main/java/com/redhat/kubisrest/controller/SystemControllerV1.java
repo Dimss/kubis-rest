@@ -4,6 +4,7 @@ import com.redhat.kubisrest.payload.AppStatusResponse;
 import com.redhat.kubisrest.payload.HostMetadataResponse;
 import com.redhat.kubisrest.payload.Message;
 import com.redhat.kubisrest.payload.ResponsePayload;
+import com.redhat.kubisrest.service.RetryPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/system")
 public class SystemControllerV1 {
+    Logger logger = LoggerFactory.getLogger(SystemControllerV1.class);
+
     @Autowired
     BuildProperties buildProperties;
+
+    @Autowired
+    RetryPolicy retryPolicy;
 
     @Autowired
     private Environment environment;
@@ -38,6 +44,18 @@ public class SystemControllerV1 {
     @GetMapping("/metadata")
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity hostMetadata( @RequestHeader(value="X-APP-USER",defaultValue = "") String xAppUser) {
+        // Retry policy block
+        if (xAppUser.equals("retry")) retryPolicy.setSequence();
+        if (retryPolicy.getSequence() != 0){
+            logger.info("This is sequence: "+retryPolicy.getSequence());
+            logger.info("Gonna sleep for 5 sec. . .");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         InetAddress ip;
         try {
             ip = Inet4Address.getLocalHost();
@@ -72,7 +90,6 @@ public class SystemControllerV1 {
 
     @RequestMapping(value = "/message", method = RequestMethod.POST)
     public ResponseEntity message(@RequestBody Message message) throws Exception {
-        Logger logger = LoggerFactory.getLogger(SystemControllerV1.class);
         logger.info("Received new message");
         logger.info(message.toString());
         return ResponseEntity
