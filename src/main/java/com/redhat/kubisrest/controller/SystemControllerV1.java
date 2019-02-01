@@ -45,6 +45,7 @@ public class SystemControllerV1 {
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity hostMetadata( @RequestHeader(value="X-APP-USER",defaultValue = "") String xAppUser) {
         // Retry policy block
+        // update for commit
         if (xAppUser.equals("retry")) retryPolicy.setSequence();
         if (retryPolicy.getSequence() != 0){
             logger.info("This is sequence: "+retryPolicy.getSequence());
