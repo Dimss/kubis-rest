@@ -35,6 +35,7 @@ public class SystemControllerV1 {
 
     @GetMapping("/version")
     public ResponseEntity status() {
+        logger.info("Fetching app version ");
         return ResponseEntity
                 .ok()
                 .header("content-type", "application/json")
@@ -43,12 +44,13 @@ public class SystemControllerV1 {
 
     @GetMapping("/metadata")
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public ResponseEntity hostMetadata( @RequestHeader(value="X-APP-USER",defaultValue = "") String xAppUser) {
+    public ResponseEntity hostMetadata(@RequestHeader(value = "X-APP-USER", defaultValue = "") String xAppUser) {
+
         // Retry policy block
         // update for commit
         if (xAppUser.equals("retry")) retryPolicy.setSequence();
-        if (retryPolicy.getSequence() != 0){
-            logger.info("This is sequence: "+retryPolicy.getSequence());
+        if (retryPolicy.getSequence() != 0) {
+            logger.info("This is sequence: " + retryPolicy.getSequence());
             logger.info("Gonna sleep for 5 sec. . .");
             try {
                 Thread.sleep(5000);
@@ -56,7 +58,7 @@ public class SystemControllerV1 {
                 e.printStackTrace();
             }
         }
-
+        logger.info("Gonna~ fetch metadata");
         InetAddress ip;
         try {
             ip = Inet4Address.getLocalHost();
@@ -78,7 +80,7 @@ public class SystemControllerV1 {
     @GetMapping("/block")
     public ResponseEntity blockRequest() {
         try {
-            Thread.sleep(10*1000);
+            Thread.sleep(10 * 1000);
             return ResponseEntity
                     .ok()
                     .header("content-type", "application/json")
